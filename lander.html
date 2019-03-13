@@ -1,0 +1,204 @@
+﻿
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"> <!--bigining html-->
+<head> <!--bigining head-->
+    <meta charset="utf-8" />
+    <title>Space Lander</title>
+    <link rel="stylesheet" href="StyleSheet.css" />
+</head> <!--end head-->
+
+<body> <!--bigining body-->
+    <!--set the canvas width and height and set the sprites and Classes scripts-->
+    <canvas id="canvas" width="800" height="800"></canvas>
+    <script src="sprites/saucer.js"></script>
+    <script src="sprites/pad.js"></script>
+    <script src="sprites/square.js"></script>
+    <script src="classes/acceleration.js"></script>
+    <script src="classes/collision.js"></script>
+    <script src="classes/keycode.js"></script>
+    <script src="classes/vector.js"></script>
+    <script src="sprites/bottomPad.js"></script>
+    <script src="sprites/leftPad.js"></script>
+    <script src="sprites/rightPad.js"></script>
+    <script src="sprites/topPad.js"></script>
+    <script src="sprites/obstacle2.js"></script>
+    <script src="sprites/obstacle3.js"></script>
+
+    <!-- NEW BELOW        -->
+    <p id="P0">aaa</p>
+    <p id="P1">aaa</p>
+    <p id="P2">aaa</p>
+    <!-- END NEW BELOW modified       -->
+
+    <script> //bigining script
+        //this function will always be executed when the page loads
+        window.onload = function () {
+            //create a reference to the canvas
+            var canvas = document.getElementById('canvas'),
+                //access the 2D drawing API
+                context = canvas.getContext('2d'),
+
+                //new instance of the Saucer class
+                ship = new Saucer();
+
+            //create a new instance of the vector class
+            vector = new Vector(25, 1);
+            
+            // create a new aceleration
+            acceleration = new Accelerate(.001);
+
+            //new instance of the landing pad class
+            pad = new Pad();
+
+            //new instance of the top pad class
+            TopPad = new Tpad(700, 5),
+
+                //new instance of the bottom pad class
+                BottomPad = new Bpad(65, 795),
+
+               //new instance of the left pad class
+                LeftPad = new Lpad(10, 115),
+
+                //new instance of the right pad class
+                RightPad = new Rpad(795, 115),
+                
+                //new instance of the obstacles pad classes
+            obstacle2 = new Obstacle2();
+            obstacle3 = new Obstacle3();
+            
+
+            //set the position of the landing pad
+            pad.X = 600;
+            pad.Y = 775;
+
+            //create a new instance of the collision detection
+            collision = new Collision();
+            
+            //function to handle keyboard events
+            function KeyboardEventHandler(event) {
+                //if the up arrow is pressed
+                if (event.keyCode == keycode.UP) {
+                    //activate the thrusters
+                    acceleration.VThrust(.01);
+                    //ship.Y -= 10;
+                 
+                }//END if
+
+                if (event.keyCode == keycode.LEFT) {
+                    //go left
+                   acceleration.HThrust(.01);
+                    
+                }//end if
+
+                if (event.keyCode == keycode.RIGHT) {
+                    //go right
+                    acceleration.HThrust(-.01);  
+                }//end if
+
+                if (event.keyCode == keycode.DOWN) {
+                    //kill engines
+                    acceleration.Halt();
+                }//end if
+               
+            }//END KeyboardEventHandler
+
+            //add a listener for the keydown event
+            window.addEventListener('keydown', KeyboardEventHandler, false);
+            
+            // call the drawframe function
+            (function drawFrame() {
+
+                //clear the canvas for the new frame
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                
+                //draw the spaceship
+                ship.draw(context);
+
+                // call this function to move the spaceship
+                ship.move();
+
+                // call obstacles function
+                obstacle2.draw(context);
+                obstacle3.draw(context);
+                BottomPad.draw(context);
+                TopPad.draw(context);
+                LeftPad.draw(context);
+                RightPad.draw(context);
+
+                //apply the acceleration to the ship
+                ship.accelerate(acceleration);
+                
+                //get the next animation frame
+                window.requestAnimationFrame(drawFrame);
+                
+                //draw the landing pad
+                pad.draw(context);
+
+                ////////////////////
+                document.getElementById("P0").innerHTML = ship.VY;
+                document.getElementById("P1").innerHTML = "boom: " + ship.BOOM;
+                document.getElementById("P2").innerHTML = "Success: " + ship.SUCCESS;
+                ///////////////////
+
+                //disable saucer
+                if (collision.Overlapping(ship, pad)) {
+                    //halt the ship
+                    ship.halt();  
+                }//end if
+
+                //disable saucer
+                if (collision.Overlapping(ship, obstacle2)) {
+                    //disable button
+                    ship.stop()
+                    //halt the ship
+                    ship.halt();
+                }//end if
+
+                //disable saucer
+                if (collision.Overlapping(ship, obstacle3)) {
+                    //disable button
+                    ship.stop()
+                    //halt the ship
+                    ship.halt();
+                }//end if
+
+                //disable saucer
+                if (collision.Overlapping(ship, RightPad)) {
+                    //disable button
+                    ship.stop()
+                    //halt the ship
+                    ship.halt()
+                }//end if
+
+                //disable saucer
+                if (collision.Overlapping(ship, LeftPad)) {
+                    //disable button
+                    ship.stop()
+                    //halt the ship
+                    ship.halt()
+                }//end if
+
+                //disable saucer
+                if (collision.Overlapping(ship, TopPad)) {
+                    //disable button
+                    ship.stop()
+                    //halt the ship
+                    ship.halt()
+                }//end if
+
+                //disable saucer
+                if (collision.Overlapping(ship, BottomPad)) {
+                    //disable button
+                    ship.stop()
+                    //halt the ship
+                    ship.halt()
+                }//end if
+
+            }//END drawframe 
+            )();//END drawframe 
+        }
+    </script> <!--end the script-->
+
+</body><!--end body-->
+
+</html> <!--end html-->
