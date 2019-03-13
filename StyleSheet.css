@@ -1,0 +1,9 @@
+﻿body {
+    background-color: rgb(176,176,176);
+   
+}
+
+#canvas {
+    /*background-image: url("background.gif");*/
+    background-image:url("background1.gif");
+}
